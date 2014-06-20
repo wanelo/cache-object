@@ -20,15 +20,15 @@ RSpec.describe "Caching" do
     expect(u2.id).to eq(user.id)
   end
 
-it "Uses custom find_by_id method" do
+  it "Uses custom find_by_id method" do
     expect(User).to receive(:cache_object_cache_by_id).with(user.id).and_call_original
     u2 = User.find_by_id(user.id)
     expect(u2.id).to eq(user.id)
   end
 
-
-
-
+  it "Has correct cache_key" do
+    expect(User.cache_object_key_name(12)).to eq("User-12")
+  end
 
 
 end
