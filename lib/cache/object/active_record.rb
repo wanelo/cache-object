@@ -17,6 +17,29 @@ module Cache
         end
       end
 
+      def _dump(level = 0)
+        Marshal.dump(attributes)
+      end
+
+      def load_from_cache(attributes)
+        attributes.each_pair do |key, value|
+          attributes[key] = value
+        end
+
+        @attributes = self.class.initialize_attributes(attributes)
+        @relation = nil
+
+        @attributes_cache, @previously_changed, @changed_attributes = {}, {}, {}
+        @association_cache = {}
+        @aggregation_cache = {}
+        @_start_transaction_state = {}
+        @readonly = @destroyed = @marked_for_destruction = false
+        @new_record = false
+        @column_types = self.class.column_types if self.class.respond_to?(:column_types)
+        @changed_attributes = {}
+        @new_record = false
+      end
+
       def write_cache!
         Cache::Object.adapter.write(_cache_object_decorator)
       end
@@ -30,6 +53,14 @@ module Cache
       end
 
       module ClassMethods
+        def _load(args)
+          attributes = Marshal.load(args)
+
+          object = allocate
+          object.load_from_cache(attributes)
+          object
+        end
+
         def find(*args)
           Cache::Object.adapter.fetch(self, *args[0]) do
             super(*args)
