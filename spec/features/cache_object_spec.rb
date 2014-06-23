@@ -5,30 +5,73 @@ require 'support/models'
 # using with actual AR finder methods
 RSpec.describe "Caching" do
 
-  before { CreateModelsForTest.migrate(:up) }
-  after { CreateModelsForTest.migrate(:down) }
-
-  let(:user) { User.create }
-
-  it "is hot" do
-    expect(user).to_not be_nil
+  before do
+    CreateModelsForTest.migrate(:up)
+    Cache::Object.configure do |c|
+      c.cache = ::ActiveSupport::Cache::MemoryStore.new
+    end
   end
 
-  it "Uses custom find method" do
-    expect(User).to receive(:cache_object_cache_by_id).with(user.id).and_call_original
-    u2 = User.find(user.id)
-    expect(u2.id).to eq(user.id)
+  after do
+    CreateModelsForTest.migrate(:down)
   end
 
-  it "Uses custom find_by_id method" do
-    expect(User).to receive(:cache_object_cache_by_id).with(user.id).and_call_original
-    u2 = User.find_by_id(user.id)
-    expect(u2.id).to eq(user.id)
+  let!(:user) { User.create(age: 13, name: "Bob") }
+
+  describe "#find" do
+    it "finds the object from the cache" do
+      expect {
+        expect(User.find(user.id)).to eq(user)
+      }.to change { ActiveRecord::QueryCounter.query_count }.by(0)
+    end
   end
 
-  it "Has correct cache_key" do
-    expect(User.cache_object_key_name(12)).to eq("User-12")
+  describe "#find_by_id" do
+    it "finds the object from the cache" do
+      expect {
+        expect(User.find_by_id(user.id)).to eq(user)
+      }.to change { ActiveRecord::QueryCounter.query_count }.by(0)
+    end
   end
 
+  describe "#find_by_name_and_age" do
+    it "finds the object from the cache" do
+      expect {
+        expect(User.find_by_name_and_age("Bob", 13)).to eq(user)
+      }.to change { ActiveRecord::QueryCounter.query_count }.by(0)
+    end
 
+    describe "when the name is changed" do
+      it "writes the updated data into the cache" do
+        user.update_attributes(name: "Sally")
+        expect {
+          fetched_user = User.find_by_name_and_age("Sally", 13)
+          expect(fetched_user.name).to eq("Sally")
+        }.to change { ActiveRecord::QueryCounter.query_count }.by(0)
+      end
+    end
+  end
+
+  describe "when user id destroyed" do
+    it "tries to run a query" do
+      user.destroy
+      expect {
+        expect {
+          User.find(user.id)
+        }.to raise_error
+      }.to change { ActiveRecord::QueryCounter.query_count }.by(1)
+    end
+  end
+
+  describe "rolling back a transaction" do
+    it "expires the cache" do
+      expect {
+        user.update_attributes(name: "asplode")
+      }.to raise_error
+
+      expect {
+        User.find(user.id)
+      }.to change { ActiveRecord::QueryCounter.query_count }.by(1)
+    end
+  end
 end

@@ -33,11 +33,7 @@ RSpec.describe Cache::Object do
       it "is one day by default" do
         expect(Cache::Object.configuration.ttl).to eq(86400)
       end
-
     end
-
-
   end
-
 
 end

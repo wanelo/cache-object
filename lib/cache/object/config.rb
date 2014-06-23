@@ -1,11 +1,15 @@
 module Cache
   module Object
     class Config
-      attr_accessor :cache,:enabled, :ttl
+      attr_accessor :enabled, :ttl, :adapter, :cache
 
       def initialize
         self.enabled = true
         self.ttl = 86400
+      end
+
+      def adapter
+        @adapter ||= Cache::Object::Adapter.new(cache)
       end
     end
   end
