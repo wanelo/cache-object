@@ -9,9 +9,8 @@ module Cache
 
       def mapping_cache_keys
         mappings.map do |mapping|
-          attributes = mapping.inject({}) do |memo, attr|
-            memo[attr] = instance.send(attr)
-            memo
+          attributes = {}.tap do |obj|
+            mapping.each { |attr| obj[attr] = instance.send(attr) }
           end
           KeyGenerator.key_for_mapping(instance.class.name, attributes)
         end

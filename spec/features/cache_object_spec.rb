@@ -55,31 +55,26 @@ RSpec.describe "Caching" do
   end
 
   describe "#fetch_all" do
+    let!(:u1) { 1.upto(3).map { |i| User.create(age: 13, name: "name#{i}") } }
     it "Should call db once for all in one read" do
-      u1 = 1.upto(3).map { |i| User.create(age: 13, name: "name#{i}") }
+
       expect {
         User.fetch_all(u1.map(&:id))
       }.to change { ActiveRecord::QueryCounter.query_count }.by(0)
     end
 
     it "Should call the db again after cache flush" do
-
-      u1 = 1.upto(3).map { |i| User.create(age: 13, name: "name#{i}") }
-
-      # Need to figuree out why cache and adapter cache point to different variables
-       Cache::Object.adapter.instance_variable_get(:@store).clear
+      Cache::Object.configuration.cache.clear
 
       expect {
         User.fetch_all(u1.map(&:id))
       }.to change { ActiveRecord::QueryCounter.query_count }.by(1)
 
+      # Should hit cache
       expect {
         User.fetch_all(u1.map(&:id))
       }.to change { ActiveRecord::QueryCounter.query_count }.by(0)
-
-
     end
-
   end
 
 
