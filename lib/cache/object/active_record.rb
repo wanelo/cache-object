@@ -22,10 +22,6 @@ module Cache
       end
 
       def load_from_cache(attributes)
-        attributes.each_pair do |key, value|
-          attributes[key] = value
-        end
-
         @attributes = self.class.initialize_attributes(attributes)
         @relation = nil
 
@@ -55,7 +51,6 @@ module Cache
       module ClassMethods
         def _load(args)
           attributes = Marshal.load(args)
-
           object = allocate
           object.load_from_cache(attributes)
           object
