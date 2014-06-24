@@ -4,6 +4,7 @@ require 'cache/object/active_record'
 require 'cache/object/adapter'
 require 'cache/object/key_generator'
 require 'cache/object/multi_get'
+require 'cache/object/dtrace_provider'
 
 module Cache
   module Object

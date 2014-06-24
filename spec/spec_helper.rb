@@ -1,5 +1,6 @@
 require 'cache/object'
 require 'rspec/collection_matchers'
+require 'rspec/its'
 RSpec.configure do |config|
 
   config.before(:each) do
