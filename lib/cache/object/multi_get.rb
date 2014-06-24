@@ -11,10 +11,10 @@ module Cache
         objs = cached_objects(ids)
         remaining = missed_ids(ids, objs)
         return objs if remaining.empty?
-        objs + load_remaining(remaining)
+        objs + load_from_db(remaining)
       end
 
-      def load_remaining(ids)
+      def load_from_db(ids)
         primary_key = @clazz.primary_key.to_sym
         @clazz.where(primary_key => ids).to_a.each(&:write_cache!)
       end

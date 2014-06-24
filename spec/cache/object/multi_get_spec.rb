@@ -32,7 +32,7 @@ RSpec.describe Cache::Object::MultiGet do
   describe "#load_remaining" do
     it "performs missed queries" do
       expect(fake_clazz).to receive(:where).with(:foo => [1, 2, 3]).once { [double(write_cache!: true)] }
-      multi_get.load_remaining([1, 2, 3])
+      multi_get.load_from_db([1, 2, 3])
     end
   end
 
@@ -40,7 +40,7 @@ RSpec.describe Cache::Object::MultiGet do
     describe "with all expected ids" do
       it "never calls through to db" do
         expect(multi_get).to receive(:cached_objects).with([1, 2, 3]) {  obj_arr }
-        expect(multi_get).to receive(:load_remaining).never
+        expect(multi_get).to receive(:load_from_db).never
         multi_get.fetch_all([1, 2, 3])
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe Cache::Object::MultiGet do
     describe "with a cache miss" do
       it "calls through to db" do
         expect(multi_get).to receive(:cached_objects).with([1, 2, 3]) { [ obj_arr[0] ]}
-        expect(multi_get).to receive(:load_remaining).with([2, 3]) { [obj_arr[1], obj_arr[2]] }
+        expect(multi_get).to receive(:load_from_db).with([2, 3]) { [obj_arr[1], obj_arr[2]] }
         expect(multi_get.fetch_all([1, 2, 3])).to have(3).items
       end
     end

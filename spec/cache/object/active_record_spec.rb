@@ -58,7 +58,6 @@ RSpec.describe Cache::Object::ActiveRecord do
     end
   end
 
-
   describe "caching methods" do
     describe "#write_cache" do
       it "calls write cache" do
@@ -67,7 +66,6 @@ RSpec.describe Cache::Object::ActiveRecord do
         object.write_cache!
       end
     end
-
 
     describe "#expire_cache" do
       it "calls write cache" do
@@ -115,9 +113,7 @@ RSpec.describe Cache::Object::ActiveRecord do
         expect(multi_getter).to receive(:fetch_all).with([1,2,4])
         clazz.fetch_all([1, 2, 4])
       end
-
     end
-
 
     describe "object_cache_on" do
 

@@ -4,7 +4,7 @@ module Cache
       attr_reader :store
 
       def initialize(store)
-        raise "Cache Store is nil" unless store
+        raise "Cache Store is nil, please initialize" unless store
         @store = store
       end
 
@@ -35,7 +35,6 @@ module Cache
       def read_multi(args)
         store.read_multi(*args)
       end
-
 
       private
 
