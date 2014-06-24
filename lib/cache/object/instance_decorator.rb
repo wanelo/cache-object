@@ -18,7 +18,7 @@ module Cache
       end
 
       def canonical_cache_key
-        KeyGenerator.key_for_object(instance.class.name, instance.id)
+        KeyGenerator.key_for_object(instance.class.name, instance.send(instance.class.primary_key))
       end
     end
   end
