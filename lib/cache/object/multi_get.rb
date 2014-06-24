@@ -1,7 +1,7 @@
 module Cache
   module Object
     class MultiGet
-      attr_accessor :clazz
+      attr_reader :clazz
 
       def initialize(clazz)
         @clazz = clazz
@@ -15,12 +15,12 @@ module Cache
       end
 
       def load_from_db(ids)
-        primary_key = @clazz.primary_key.to_sym
-        @clazz.where(primary_key => ids).to_a.each(&:write_cache!)
+        primary_key = clazz.primary_key.to_sym
+        clazz.where(primary_key => ids).to_a.each(&:write_cache!)
       end
 
       def object_keys(ids)
-        ids.map { |id| Cache::Object::KeyGenerator.key_for_object(@clazz.name, id) }
+        ids.map { |id| Cache::Object::KeyGenerator.key_for_object(clazz.name, id) }
       end
 
       def cached_objects(ids)
