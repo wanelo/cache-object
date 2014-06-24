@@ -32,6 +32,11 @@ module Cache
                     &block)
       end
 
+      def read_multi(args)
+        store.read_multi(*args)
+      end
+
+
       private
 
       def ttl

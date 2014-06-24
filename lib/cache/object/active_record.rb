@@ -73,6 +73,10 @@ module Cache
           end
         end
 
+        def fetch_all(ids)
+          Cache::Object::MultiGet.new(self).fetch_all(ids)
+        end
+
         def object_cache_on(*attrs)
           self._object_cache_attr_mappings << attrs
           define_singleton_method("find_by_#{attrs.join('_and_')}") do |*args|

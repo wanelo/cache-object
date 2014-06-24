@@ -108,6 +108,17 @@ RSpec.describe Cache::Object::ActiveRecord do
       end
     end
 
+    describe ".fetch_all" do
+      it "should call through to multi_get" do
+        multi_getter = double(fetch_all: true)
+        expect(Cache::Object::MultiGet).to receive(:new).with(clazz) { multi_getter }
+        expect(multi_getter).to receive(:fetch_all).with([1,2,4])
+        clazz.fetch_all([1, 2, 4])
+      end
+
+    end
+
+
     describe "object_cache_on" do
 
       it "creates_finder_methods" do

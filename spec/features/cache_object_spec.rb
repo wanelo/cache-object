@@ -7,13 +7,15 @@ RSpec.describe "Caching" do
 
   before do
     CreateModelsForTest.migrate(:up)
+    cache = ::ActiveSupport::Cache::MemoryStore.new
     Cache::Object.configure do |c|
-      c.cache = ::ActiveSupport::Cache::MemoryStore.new
+      c.cache = cache
     end
   end
 
   after do
     CreateModelsForTest.migrate(:down)
+    Cache::Object.instance_variable_set(:@configuration, nil)
   end
 
   let!(:user) { User.create(age: 13, name: "Bob") }
@@ -52,6 +54,35 @@ RSpec.describe "Caching" do
     end
   end
 
+  describe "#fetch_all" do
+    it "Should call db once for all in one read" do
+      u1 = 1.upto(3).map { |i| User.create(age: 13, name: "name#{i}") }
+      expect {
+        User.fetch_all(u1.map(&:id))
+      }.to change { ActiveRecord::QueryCounter.query_count }.by(0)
+    end
+
+    it "Should call the db again after cache flush" do
+
+      u1 = 1.upto(3).map { |i| User.create(age: 13, name: "name#{i}") }
+
+      # Need to figuree out why cache and adapter cache point to different variables
+       Cache::Object.adapter.instance_variable_get(:@store).clear
+
+      expect {
+        User.fetch_all(u1.map(&:id))
+      }.to change { ActiveRecord::QueryCounter.query_count }.by(1)
+
+      expect {
+        User.fetch_all(u1.map(&:id))
+      }.to change { ActiveRecord::QueryCounter.query_count }.by(0)
+
+
+    end
+
+  end
+
+
   describe "when user id destroyed" do
     it "tries to run a query" do
       user.destroy
@@ -74,4 +105,6 @@ RSpec.describe "Caching" do
       }.to change { ActiveRecord::QueryCounter.query_count }.by(1)
     end
   end
+
+
 end

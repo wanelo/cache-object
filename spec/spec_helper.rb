@@ -1,11 +1,12 @@
 require 'cache/object'
+require 'rspec/collection_matchers'
 RSpec.configure do |config|
 
-  config.before do
+  config.before(:each) do
     Cache::Object.instance_variable_set(:@configuration, nil)
   end
 
-  config.after do
+  config.after(:each) do
     Cache::Object.instance_variable_set(:@configuration, nil)
   end
 

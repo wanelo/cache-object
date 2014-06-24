@@ -3,6 +3,7 @@ require 'cache/object/config'
 require 'cache/object/active_record'
 require 'cache/object/adapter'
 require 'cache/object/key_generator'
+require 'cache/object/multi_get'
 
 module Cache
   module Object

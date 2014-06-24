@@ -6,6 +6,8 @@ module Cache
       def initialize
         self.enabled = true
         self.ttl = 86400
+        self.adapter = nil
+        self.cache = nil
       end
 
       def adapter
