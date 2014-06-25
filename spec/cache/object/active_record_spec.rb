@@ -25,6 +25,14 @@ RSpec.describe Cache::Object::ActiveRecord do
   class Model < FakeActiveRecord
     include Cache::Object::ActiveRecord
 
+    def self.primary_key
+      :id
+    end
+
+    def id
+      Random.rand * 100
+    end
+
     object_cache_on :name, :age
   end
 
@@ -99,8 +107,7 @@ RSpec.describe Cache::Object::ActiveRecord do
     describe ".find_by_id" do
       describe "caching interactions" do
         it "yields to super with cache" do
-          expect(super_clazz).to receive(:primary_key) { "primary_key" }
-          expect(super_clazz).to receive(:where).with("primary_key" => 12).once { double(first: true) }
+          expect(super_clazz).to receive(:where).with(:id => 12).once { double(first: true) }
           clazz.find_by_id(12)
         end
       end

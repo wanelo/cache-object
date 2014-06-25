@@ -101,5 +101,12 @@ RSpec.describe "Caching" do
     end
   end
 
+  describe "when object is not persisted" do
+    it "does not call the adapter" do
+      expect(Cache::Object.adapter).to receive(:write).never
+      User.new(name: "blah").write_cache!
+    end
+  end
+
 
 end

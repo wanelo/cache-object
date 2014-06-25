@@ -37,10 +37,12 @@ module Cache
       end
 
       def write_cache!
+        return unless self.send(self.class.primary_key)
         Cache::Object.adapter.write(_cache_object_decorator)
       end
 
       def expire_cache!
+        return unless self.send(self.class.primary_key)
         Cache::Object.adapter.delete(_cache_object_decorator)
       end
 
