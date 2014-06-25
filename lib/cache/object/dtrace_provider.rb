@@ -22,7 +22,7 @@ module Cache
           # args: class_name, id, ttl
           write: provider.probe(:adapter, :write, :string, :string, :string),
           # args: class_name, id
-          delete: provider.probe(:adapter, :delete, :string, :string, :string)
+          delete: provider.probe(:adapter, :delete, :string, :string)
         }
       end
 

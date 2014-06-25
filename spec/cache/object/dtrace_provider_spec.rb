@@ -59,7 +59,7 @@ RSpec.describe Cache::Object::DTraceProvider do
       subject(:probe) { provider.probes[:delete] }
       its(:function) { should eq :adapter }
       its(:name) { should eq :delete }
-      its(:arguments) { should eq [:string, :string, :string] }
+      its(:arguments) { should eq [:string, :string] }
     end
   end
 
