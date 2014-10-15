@@ -1,4 +1,5 @@
 require 'spec_helper'
+return unless defined? USDT
 
 RSpec.describe Cache::Object::DTraceProvider do
   describe 'initialize' do
@@ -71,7 +72,7 @@ RSpec.describe Cache::Object::DTraceProvider do
     describe "when probe is enabled" do
       it "receives event" do
         probe = double(enabled?: true)
-        provider = double(probes: { boom: probe})
+        provider = double(probes: {boom: probe})
         allow(Cache::Object::DTraceProvider).to receive(:provider).and_return(provider)
         expect(probe).to receive(:fire).with("hai")
         Cache::Object::DTraceProvider.fire!(:boom, "hai")
@@ -81,7 +82,7 @@ RSpec.describe Cache::Object::DTraceProvider do
     describe "when probe is disabled" do
       it "does not receives event" do
         probe = double(enabled?: false)
-        provider = double(probes: { boom: probe})
+        provider = double(probes: {boom: probe})
         allow(Cache::Object::DTraceProvider).to receive(:provider).and_return(provider)
         expect(probe).to receive(:fire).never
         Cache::Object::DTraceProvider.fire!(:boom, "hai")

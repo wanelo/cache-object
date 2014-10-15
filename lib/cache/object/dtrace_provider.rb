@@ -1,4 +1,8 @@
-require 'usdt'
+begin
+  require 'usdt'
+rescue LoadError => err
+  puts err
+end
 
 module Cache
   module Object
@@ -6,6 +10,7 @@ module Cache
       attr_reader :provider, :probes
 
       def initialize
+        return unless defined?(USDT::Provider)
         @provider = USDT::Provider.create(:ruby, :cache_object)
 
         @probes = {
@@ -33,6 +38,7 @@ module Cache
       end
 
       def self.fire!(probe_name, *args)
+        return unless defined?(USDT::Provider)
         raise "Unknown probe: #{probe_name}" unless self.provider.probes[probe_name]
         probe = self.provider.probes[probe_name]
         probe.fire(*args) if probe.enabled?
