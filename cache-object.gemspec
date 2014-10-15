@@ -12,7 +12,6 @@ Gem::Specification.new do |spec|
   spec.description   = %q{Object R/W Caching on top of ActiveRecord}
   spec.homepage      = ""
   spec.license       = "MIT"
-  spec.platform      = 'jruby'
 
   spec.files         = `git ls-files -z`.split("\x0")
  # spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
