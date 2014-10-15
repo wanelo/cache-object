@@ -1,7 +1,6 @@
 require 'spec_helper'
-return unless defined? USDT
 
-RSpec.describe Cache::Object::DTraceProvider do
+RSpec.describe Cache::Object::DTraceProvider, platform: 'ruby' do
   describe 'initialize' do
     it 'creates a new provider' do
       expect(USDT::Provider).to receive(:create).with(:ruby, :cache_object).and_return(double(probe: true))
