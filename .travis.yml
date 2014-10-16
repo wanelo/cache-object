@@ -1,4 +1,7 @@
-cache:
-  bundler: true
+jdk:
+  - openjdk7
+language: ruby
 rvm:
-  - 2.1.2
+- 2.1
+- jruby-19mode
+script: bundle exec rspec spec
