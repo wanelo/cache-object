@@ -1,7 +1,6 @@
 begin
   require 'usdt'
-rescue LoadError => err
-  puts "UDST Gem not found. In order to enable dtrace include usdt gem"
+rescue LoadError
 end
 
 module Cache

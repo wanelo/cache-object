@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+The jruby branch works in both MRI and jRuby. To enable dtrace in MRI, please include "ruby-usdt" in your Gemfile.
 
 ## Contributing
 
