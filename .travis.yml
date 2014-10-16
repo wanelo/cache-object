@@ -1,0 +1,4 @@
+cache:
+  bundler: true
+rvm:
+  - 2.1.2
