@@ -22,7 +22,6 @@ Gem::Specification.new do |spec|
     spec.platform = 'jruby'
     spec.add_development_dependency "activerecord-jdbcsqlite3-adapter"
   else
-    spec.add_dependency "ruby-usdt"
     spec.add_development_dependency "sqlite3"
   end
   spec.add_dependency "activerecord", ">= 3.0"
@@ -36,5 +35,4 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "guard"
   spec.add_development_dependency "guard-rspec"
-
 end
