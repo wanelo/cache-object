@@ -108,5 +108,13 @@ RSpec.describe "Caching" do
     end
   end
 
+  describe "object_cache_include" do
+    it "has expected additional attribute" do
+      user.shoe_size = '14'
+      user.write_cache!
+
+      expect(User.find(user.id).shoe_size).to eq('14')
+    end
+  end
 
 end

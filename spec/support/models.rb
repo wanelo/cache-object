@@ -40,6 +40,9 @@ end
 class User < ActiveRecord::Base
   include Cache::Object::ActiveRecord
 
+  object_cache_include :shoe_size
+  attr_accessor :shoe_size
+
   object_cache_on :name, :age
 
   after_save :asplode_if_name_is_asplode

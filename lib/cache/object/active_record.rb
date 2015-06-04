@@ -11,6 +11,10 @@ module Cache
             @_object_cache_attr_mappings ||= []
           end
 
+          def _object_cache_include
+            @_object_cache_include ||= []
+          end
+
           after_destroy :expire_cache!
           after_save :write_cache!
           after_rollback :expire_cache!
@@ -18,10 +22,19 @@ module Cache
       end
 
       def _dump(level = 0)
-        Marshal.dump(attributes)
+        additional_attributes = {}.tap do |h|
+          self.class._object_cache_include.flatten.each do |key|
+            h[key.to_s] = self.send(key)
+          end
+        end
+        Marshal.dump(attributes.merge(additional_attributes))
       end
 
       def load_from_cache(attributes)
+        self.class._object_cache_include.flatten.each do |key|
+          send("#{key}=", attributes.delete(key.to_s))
+        end
+
         @attributes = self.class.initialize_attributes(attributes)
         @relation = nil
 
@@ -72,6 +85,10 @@ module Cache
 
         def fetch_all(ids)
           Cache::Object::MultiGet.new(self).fetch_all(ids)
+        end
+
+        def object_cache_include(*accessors)
+          self._object_cache_include << accessors
         end
 
         def object_cache_on(*attrs)
