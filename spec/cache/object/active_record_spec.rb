@@ -57,8 +57,8 @@ RSpec.describe Cache::Object::ActiveRecord do
     allow(Cache::Object).to receive(:adapter).and_return(adapter_instance)
   end
 
-  describe ".included" do
-    it "receives correct callbacks" do
+  describe '.included' do
+    it 'receives correct callbacks' do
       expect(clazz).to receive(:after_save).with(:write_cache!).once
       expect(clazz).to receive(:after_rollback).with(:expire_cache!).once
       expect(clazz).to receive(:after_destroy).with(:expire_cache!).once
@@ -66,17 +66,17 @@ RSpec.describe Cache::Object::ActiveRecord do
     end
   end
 
-  describe "caching methods" do
-    describe "#write_cache" do
-      it "calls write cache" do
+  describe 'caching methods' do
+    describe '#write_cache' do
+      it 'calls write cache' do
         expect(adapter_instance).to receive(:write).with(an_instance_of(Cache::Object::InstanceDecorator))
         object = clazz.new
         object.write_cache!
       end
     end
 
-    describe "#expire_cache" do
-      it "calls write cache" do
+    describe '#expire_cache' do
+      it 'calls write cache' do
         expect(adapter_instance).to receive(:delete).with(an_instance_of(Cache::Object::InstanceDecorator))
         object = clazz.new
         object.expire_cache!
@@ -84,19 +84,19 @@ RSpec.describe Cache::Object::ActiveRecord do
     end
   end
 
-  describe "Finder class methods" do
-    describe "#respond_to?" do
-      it "find" do
+  describe 'Finder class methods' do
+    describe '#respond_to?' do
+      it 'find' do
         expect(clazz).to respond_to(:find)
       end
-      it "find_by_id" do
+      it 'find_by_id' do
         expect(clazz).to respond_to(:find_by_id)
       end
     end
 
-    describe ".find" do
-      describe "caching interactions" do
-        it "yields to super with cache" do
+    describe '.find' do
+      describe 'caching interactions' do
+        it 'yields to super with cache' do
           allow(Cache::Object).to receive(:adapter).and_return(adapter.new)
           expect(super_clazz).to receive(:find).with(12).once
           clazz.find(12)
@@ -104,17 +104,17 @@ RSpec.describe Cache::Object::ActiveRecord do
       end
     end
 
-    describe ".find_by_id" do
-      describe "caching interactions" do
-        it "yields to super with cache" do
+    describe '.find_by_id' do
+      describe 'caching interactions' do
+        it 'yields to super with cache' do
           expect(super_clazz).to receive(:where).with(:id => 12).once { double(first: true) }
           clazz.find_by_id(12)
         end
       end
     end
 
-    describe ".fetch_all" do
-      it "should call through to multi_get" do
+    describe '.fetch_all' do
+      it 'should call through to multi_get' do
         multi_getter = double(fetch_all: true)
         expect(Cache::Object::MultiGet).to receive(:new).with(clazz) { multi_getter }
         expect(multi_getter).to receive(:fetch_all).with([1,2,4])
@@ -122,20 +122,20 @@ RSpec.describe Cache::Object::ActiveRecord do
       end
     end
 
-    describe "object_cache_on" do
+    describe 'object_cache_on' do
 
-      it "creates_finder_methods" do
+      it 'creates_finder_methods' do
         expect(clazz).to respond_to(:find_by_name_and_age)
       end
 
-      it "calls fetch_mapping on the adapter" do
-        expect(adapter_instance).to receive(:fetch_mapping).with(clazz, name: "bob", age: 13).once
-        clazz.find_by_name_and_age("bob", 13)
+      it 'calls fetch_mapping on the adapter' do
+        expect(adapter_instance).to receive(:fetch_mapping).with(clazz, name: 'bob', age: 13).once
+        clazz.find_by_name_and_age('bob', 13)
       end
 
-      it "calls super" do
-        expect(super_clazz).to receive(:find_by_name_and_age).with("bob", 13)
-        clazz.find_by_name_and_age("bob", 13)
+      it 'calls super' do
+        expect(super_clazz).to receive(:find_by_name_and_age).with('bob', 13)
+        clazz.find_by_name_and_age('bob', 13)
       end
     end
   end

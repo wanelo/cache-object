@@ -50,6 +50,6 @@ class User < ActiveRecord::Base
   after_save :asplode_if_name_is_asplode
 
   def asplode_if_name_is_asplode
-    raise SillyTestError.new("WOAH") if name == "asplode"
+    raise SillyTestError.new('WOAH') if name == 'asplode'
   end
 end

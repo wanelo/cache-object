@@ -63,28 +63,28 @@ RSpec.describe Cache::Object::DTraceProvider do
     end
   end
 
-  describe ".fire!" do
-    it "raises if no provider" do
+  describe '.fire!' do
+    it 'raises if no provider' do
       expect { Cache::Object::DTraceProvider.fire!(:fake) }.to raise_error(StandardError)
     end
 
-    describe "when probe is enabled" do
-      it "receives event" do
+    describe 'when probe is enabled' do
+      it 'receives event' do
         probe = double(enabled?: true)
         provider = double(probes: { boom: probe})
         allow(Cache::Object::DTraceProvider).to receive(:provider).and_return(provider)
-        expect(probe).to receive(:fire).with("hai")
-        Cache::Object::DTraceProvider.fire!(:boom, "hai")
+        expect(probe).to receive(:fire).with('hai')
+        Cache::Object::DTraceProvider.fire!(:boom, 'hai')
       end
     end
 
-    describe "when probe is disabled" do
-      it "does not receives event" do
+    describe 'when probe is disabled' do
+      it 'does not receives event' do
         probe = double(enabled?: false)
         provider = double(probes: { boom: probe})
         allow(Cache::Object::DTraceProvider).to receive(:provider).and_return(provider)
         expect(probe).to receive(:fire).never
-        Cache::Object::DTraceProvider.fire!(:boom, "hai")
+        Cache::Object::DTraceProvider.fire!(:boom, 'hai')
       end
     end
   end
