@@ -84,7 +84,7 @@ RSpec.describe "Caching" do
       expect {
         expect {
           User.find(user.id)
-        }.to raise_error
+        }.to raise_error(ActiveRecord::RecordNotFound)
       }.to change { ActiveRecord::QueryCounter.query_count }.by(1)
     end
   end
@@ -93,7 +93,7 @@ RSpec.describe "Caching" do
     it "expires the cache" do
       expect {
         user.update_attributes(name: "asplode")
-      }.to raise_error
+      }.to raise_error(User::SillyTestError)
 
       expect {
         User.find(user.id)

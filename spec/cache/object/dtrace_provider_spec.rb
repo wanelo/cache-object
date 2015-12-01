@@ -65,7 +65,7 @@ RSpec.describe Cache::Object::DTraceProvider do
 
   describe ".fire!" do
     it "raises if no provider" do
-      expect { Cache::Object::DTraceProvider.fire!(:fake) }.to raise_error
+      expect { Cache::Object::DTraceProvider.fire!(:fake) }.to raise_error(StandardError)
     end
 
     describe "when probe is enabled" do

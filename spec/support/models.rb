@@ -38,6 +38,8 @@ class CreateModelsForTest < ActiveRecord::Migration
 end
 
 class User < ActiveRecord::Base
+  class SillyTestError < StandardError; end
+
   include Cache::Object::ActiveRecord
 
   object_cache_include :shoe_size
@@ -48,6 +50,6 @@ class User < ActiveRecord::Base
   after_save :asplode_if_name_is_asplode
 
   def asplode_if_name_is_asplode
-    raise "WOAH" if name == "asplode"
+    raise SillyTestError.new("WOAH") if name == "asplode"
   end
 end
