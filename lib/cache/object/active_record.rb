@@ -35,14 +35,11 @@ module Cache
           send("#{key}=", attributes.delete(key.to_s))
         end
 
-        @attributes = self.class.initialize_attributes(attributes)
+        _assign_attributes_from_cache(attributes)
+        init_internals
         @relation = nil
 
-        @attributes_cache, @previously_changed, @changed_attributes = {}, {}, {}
-        @association_cache = {}
-        @aggregation_cache = {}
-        @_start_transaction_state = {}
-        @readonly = @destroyed = @marked_for_destruction = false
+        @previously_changed, @changed_attributes = {}, {}
         @new_record = false
         @column_types = self.class.column_types if self.class.respond_to?(:column_types)
         @changed_attributes = {}
@@ -61,6 +58,17 @@ module Cache
 
       def _cache_object_decorator
         Cache::Object::InstanceDecorator.new(self, self.class._object_cache_attr_mappings)
+      end
+
+      private
+
+      def _assign_attributes_from_cache(attributes)
+        if self.class.respond_to?(:initialize_attributes)
+          @attributes = self.class.initialize_attributes(attributes)
+        else
+          @attributes = self.class._default_attributes.dup
+          init_attributes(attributes, {})
+        end
       end
 
       module ClassMethods

@@ -10,14 +10,14 @@ RSpec.describe Cache::Object::MultiGet do
 
   describe '#object_keys' do
     it 'maps keys correctly' do
-      expect(multi_get.object_keys(1..3)).to eq(['MyObj-1', 'MyObj-2', 'MyObj-3'])
+      expect(multi_get.object_keys(1..3)).to eq(%w(MyObj-1 MyObj-2 MyObj-3))
     end
   end
 
   describe '#cached_objects' do
     it 'fetches all the mapped keys' do
       expect(Cache::Object).to receive(:adapter) { adapter }
-      expect(adapter).to receive(:read_multi).with(['MyObj-1', 'MyObj-2', 'MyObj-3']) { double(values: true) }
+      expect(adapter).to receive(:read_multi).with(%w(MyObj-1 MyObj-2 MyObj-3)) { double(values: true) }
       multi_get.cached_objects(1..3)
     end
   end
