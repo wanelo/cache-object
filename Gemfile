@@ -1,1 +1,3 @@
-Gemfile.Rails42
+source 'https://rubygems.org'
+
+gemspec
