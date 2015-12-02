@@ -1,5 +1,7 @@
 # Cache::Object
 
+[![Build Status](https://travis-ci.org/wanelo/cache-object.svg?branch=master)](https://travis-ci.org/wanelo/cache-object)
+
 Cache ActiveRecord objects in memcached!
 
 ## Installation
