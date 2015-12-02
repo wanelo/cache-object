@@ -36,10 +36,9 @@ module Cache
         end
 
         _assign_attributes_from_cache(attributes)
-        init_internals
         @relation = nil
 
-        @previously_changed, @changed_attributes = {}, {}
+        _initialize_from_cache
         @new_record = false
         @column_types = self.class.column_types if self.class.respond_to?(:column_types)
         @changed_attributes = {}
@@ -61,6 +60,16 @@ module Cache
       end
 
       private
+
+      def _initialize_from_cache
+        @attributes_cache, @previously_changed, @changed_attributes = {}, {}, {}
+        @association_cache = {}
+        @aggregation_cache = {}
+        @_start_transaction_state = {}
+        @readonly = @destroyed = @marked_for_destruction = false
+
+        init_internals if respond_to?(:init_internals)
+      end
 
       def _assign_attributes_from_cache(attributes)
         if self.class.respond_to?(:initialize_attributes)
