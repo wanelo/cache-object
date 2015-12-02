@@ -6,3 +6,5 @@ gemfile:
   - gemfiles/Gemfile.Rails32
   - gemfiles/Gemfile.Rails41
   - gemfiles/Gemfile.Rails42
+script:
+  - bundle exec rspec
