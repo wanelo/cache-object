@@ -116,7 +116,11 @@ module Cache
 
           ActiveSupport::Notifications.instrument('cache_object.object_cache_on', attributes: attrs)
           self._object_cache_attr_mappings << attrs
+
+
           meth_name = "find_by_#{attrs.join('_and_')}"
+          puts "mappings = #{self._object_cache_attr_mappings} method_name=#{meth_name}"
+
           define_singleton_method(meth_name) do |*args|
             ActiveSupport::Notifications.instrument('cache_object.inside_singleton_method', payload: { method_name: meth_name, klass_name: self.name })
             attributes = Hash[attrs.zip(args)]
