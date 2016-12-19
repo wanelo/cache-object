@@ -109,6 +109,11 @@ module Cache
         end
 
         def object_cache_on(*attrs)
+          puts "=== ---"
+          puts 'cache_object.object_cache_on'
+          puts attrs.inspect
+          puts "==="
+
           ActiveSupport::Notifications.instrument('cache_object.object_cache_on', attributes: attrs)
           self._object_cache_attr_mappings << attrs
           meth_name = "find_by_#{attrs.join('_and_')}"
