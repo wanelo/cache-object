@@ -110,7 +110,7 @@ module Cache
 
         def object_cache_on(*attrs)
           puts "=== ---"
-          puts 'cache_object.object_cache_on'
+          puts "cache_object.object_cache_on #{self.name}"
           puts attrs.inspect
           puts "==="
 
