@@ -109,8 +109,11 @@ module Cache
         end
 
         def object_cache_on(*attrs)
+          ActiveSupport::Notifications.instrument('cache_object.object_cache_on', attributes: attrs)
           self._object_cache_attr_mappings << attrs
-          define_singleton_method("find_by_#{attrs.join('_and_')}") do |*args|
+          meth_name = "find_by_#{attrs.join('_and_')}"
+          define_singleton_method(meth_name) do |*args|
+            ActiveSupport::Notifications.instrument('cache_object.define_singleton_method', payload: { method_name: meth_name, klass_name: self.name })
             attributes = Hash[attrs.zip(args)]
             Cache::Object.adapter.fetch_mapping(self, attributes) do
               super(*args)
