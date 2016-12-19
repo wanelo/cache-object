@@ -36,9 +36,11 @@ module Cache
       def fetch_mapping(klass, attributes, &block)
         DTraceProvider.fire!(:fetch_mapping, klass.name, attributes.inspect, ttl.to_s)
 
-        store.fetch(KeyGenerator.key_for_mapping(klass.name, attributes), expires_in: ttl) do
-          DTraceProvider.fire!(:fetch_mapping_miss, klass.name, attributes.inspect, ttl.to_s)
-          yield
+        ActiveSupport::Notifications.instrument('cache_object.fetch_mapping', payload: { name: klass.name, attributes: attributes, ttl: ttl.to_s }) do
+          store.fetch(KeyGenerator.key_for_mapping(klass.name, attributes), expires_in: ttl) do
+            DTraceProvider.fire!(:fetch_mapping_miss, klass.name, attributes.inspect, ttl.to_s)
+            yield
+          end
         end
       end
 
