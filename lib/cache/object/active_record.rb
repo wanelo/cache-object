@@ -91,12 +91,14 @@ module Cache
         end
 
         def find(*args)
+          raise DeprecatedInterfaceError.new("Use fetch instead")
           Cache::Object.adapter.fetch(self, *args[0]) do
             super(*args)
           end
         end
 
         def find_by_id(id)
+          raise DeprecatedInterfaceError.new("Use fetch_by_id instead")
           Cache::Object.adapter.fetch(self, id) do
             where(self.primary_key => id).first
           end
