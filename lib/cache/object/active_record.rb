@@ -2,6 +2,8 @@ require 'cache/object/instance_decorator'
 
 module Cache
   module Object
+    class DeprecatedInterfaceError < StandardError; end
+
     module ActiveRecord
       def self.included(base)
         base.instance_eval do
@@ -110,14 +112,17 @@ module Cache
 
         def object_cache_on(*attrs)
           self._object_cache_attr_mappings << attrs
-          define_singleton_method("find_by_#{attrs.join('_and_')}") do |*args|
-            attributes = Hash[attrs.zip(args)]
-            Cache::Object.adapter.fetch_mapping(self, attributes) do
-              super(*args)
-            end
+
+          meth_name = "find_by_#{attrs.join('_and_')}"
+          fetch_meth_name = "fetch_by_#{attrs.join('_and_')}"
+
+          define_singleton_method(meth_name) do |*args|
+            raise DeprecatedInterfaceError.new("Use ##{fetch_meth_name} instead of ##{meth_name}")
           end
         end
       end
     end
   end
 end
+
+
