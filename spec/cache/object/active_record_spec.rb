@@ -134,7 +134,7 @@ RSpec.describe Cache::Object::ActiveRecord do
       end
 
       it 'calls super' do
-        expect(super_clazz).to receive(:find_by_name_and_age).with('bob', 13)
+        expect(super_clazz).to receive(:find_by).with( name: 'bob', age: 13)
         clazz.find_by_name_and_age('bob', 13)
       end
     end

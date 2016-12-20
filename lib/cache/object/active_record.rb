@@ -113,7 +113,7 @@ module Cache
           define_singleton_method("find_by_#{attrs.join('_and_')}") do |*args|
             attributes = Hash[attrs.zip(args)]
             Cache::Object.adapter.fetch_mapping(self, attributes) do
-              super(*args)
+              self.find_by(attributes)
             end
           end
         end
